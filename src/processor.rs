@@ -62,7 +62,7 @@ impl<const CACHE_SIZE_LIMIT: u64, const CACHE_LINE_SIZE: u32>
     /// Serializes the balance acounts for all the clients.
     pub fn serialize(self) -> Result<(), String> {
         let mut wtr = csv::Writer::from_writer(io::stdout());
-        wtr.write_record(&["client_id", "available", "held", "total", "locked"])
+        wtr.write_record(&["client", "available", "held", "total", "locked"])
             .map_err(|err| format!("Could not serialize header because of: {}", err))?;
 
         for client in self.clients {

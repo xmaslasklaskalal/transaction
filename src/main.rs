@@ -16,9 +16,10 @@ fn main() {
     let mut rdr = csv::ReaderBuilder::new()
         .trim(csv::Trim::All)
         .flexible(true)
+        .has_headers(false)
         .from_reader(fs::File::open(args[1].clone()).expect("Could not open input file"));
 
-    for result in rdr.deserialize() {
+    for (index, result) in rdr.deserialize().enumerate() {
         match result {
             Ok(transaction_record) => {
                 let copy: TransactionRecord = transaction_record;
@@ -28,7 +29,11 @@ fn main() {
                 }
             }
             Err(err) => {
-                eprintln!("Ignoring error {}", err);
+                // First entry might be the header, so it is expected that we might
+                // not be able to convert it into a TransactionRecord.
+                if index > 0 {
+                    eprintln!("Ignoring error {}", err);
+                }
             }
         }
     }
